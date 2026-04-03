@@ -11,9 +11,9 @@ import {
 import { useState } from "react";
 
 const navItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard, roles: ["viewer", "analyst", "admin"] as const },
-  { title: "Transactions", url: "/transactions", icon: ArrowLeftRight, roles: ["viewer", "analyst", "admin"] as const },
-  { title: "Users", url: "/users", icon: Users, roles: ["admin"] as const },
+  { title: "Dashboard", url: "/", icon: LayoutDashboard, roles: ["viewer", "analyst", "admin"] as UserRole[] },
+  { title: "Transactions", url: "/transactions", icon: ArrowLeftRight, roles: ["viewer", "analyst", "admin"] as UserRole[] },
+  { title: "Users", url: "/users", icon: Users, roles: ["admin"] as UserRole[] },
 ];
 
 export function AppSidebar() {
