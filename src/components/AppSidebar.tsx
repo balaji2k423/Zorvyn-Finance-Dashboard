@@ -1,6 +1,6 @@
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
-import { useRole } from "@/contexts/AuthContext";
+import { useRole, type UserRole } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   ArrowLeftRight,
