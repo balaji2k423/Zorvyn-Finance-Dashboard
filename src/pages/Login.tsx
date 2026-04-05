@@ -18,7 +18,7 @@ export default function LoginPage() {
     if (!email) errs.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) errs.email = "Enter a valid email";
     if (!password) errs.password = "Password is required";
-    else if (password.length < 6) errs.password = "Password must be at least 6 characters";
+    else if (password.length <= 4) errs.password = "Password must be at least 6 characters";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -176,9 +176,9 @@ export default function LoginPage() {
             <div className="mt-8 p-4 rounded-lg bg-secondary/50 border border-border/50">
               <p className="text-xs font-medium text-muted-foreground mb-2">Demo Credentials</p>
               <div className="space-y-1 text-xs text-muted-foreground">
-                <p><span className="text-foreground font-medium">Admin:</span> admin@finova.com / admin123</p>
-                <p><span className="text-foreground font-medium">Analyst:</span> analyst@finova.com / analyst123</p>
-                <p><span className="text-foreground font-medium">Viewer:</span> viewer@finova.com / viewer123</p>
+                <p><span className="text-foreground font-medium">Admin:</span> admin@zorvyn.com / admin</p>
+                <p><span className="text-foreground font-medium">Analyst:</span> analyst@zorvyn.com / analyst123</p>
+                <p><span className="text-foreground font-medium">Viewer:</span> viewer@zorvyn.com / viewer123</p>
               </div>
             </div>
           </div>
