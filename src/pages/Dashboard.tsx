@@ -57,7 +57,7 @@ function authHeader() {
 }
 
 async function apiFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`https://zorvyn.duckdns.org/api/${path}`, {
+  const res = await fetch(`https://zorvyn.duckdns.org/api${path}`, {
     headers: { "Content-Type": "application/json", ...authHeader() },
   });
   if (!res.ok) throw new Error(`Request failed (${res.status})`);
