@@ -11,9 +11,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'password2', 'role']
+        fields = ['id', 'username', 'email', 'password', 'password2', 'role', 'name']
         extra_kwargs = {
-            'role': {'required': False}
+            'role': {'required': False, 'default': 'viewer'},
+            'name': {'required': True},   # Recommended: Add name field
         }
 
     def validate(self, attrs):
@@ -33,14 +34,23 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'is_active', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        fields = [
+            'id', 
+            'username', 
+            'name',           # ← Added (important for profile icon)
+            'email', 
+            'role', 
+            'is_active', 
+            'created_at',
+            'avatar'          # ← Add this if you plan to support profile images later
+        ]
+        read_only_fields = ['id', 'created_at', 'is_active']
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'role', 'is_active']
+        fields = ['username', 'name', 'email', 'role', 'is_active']  # Added 'name'
 
 
 class ChangePasswordSerializer(serializers.Serializer):

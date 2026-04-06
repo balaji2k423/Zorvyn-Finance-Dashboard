@@ -132,7 +132,7 @@ interface TransactionModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: (record: FinancialRecord, isEdit: boolean) => void;
-  editRecord?: FinancialRecord | null;  // if set → edit mode
+  editRecord?: FinancialRecord | null;
 }
 
 function TransactionModal({
@@ -149,7 +149,6 @@ function TransactionModal({
   const [loading,    setLoading]    = useState(false);
   const [errors,     setErrors]     = useState<Record<string, string>>({});
 
-  // Load categories when modal opens
   useEffect(() => {
     if (!open) return;
     api.categories().then((res) => {
@@ -158,7 +157,6 @@ function TransactionModal({
     }).catch(() => toast.error("Failed to load categories"));
   }, [open]);
 
-  // Populate fields when editing
   useEffect(() => {
     if (!open) return;
     if (editRecord) {
@@ -176,7 +174,6 @@ function TransactionModal({
     }
   }, [open, editRecord]);
 
-  // Set default category once categories are loaded
   useEffect(() => {
     if (categories.length > 0 && !isEdit && categoryId === null) {
       setCategoryId(categories[0].id);
@@ -207,18 +204,10 @@ function TransactionModal({
     if (!validate()) return;
     setLoading(true);
     try {
-      const payload: RecordPayload = {
-        amount,
-        type,
-        category: categoryId,
-        date,
-        notes,
-      };
-
+      const payload: RecordPayload = { amount, type, category: categoryId, date, notes };
       const saved = isEdit
         ? await api.update(editRecord!.id, payload)
         : await api.create(payload);
-
       toast.success(isEdit ? "Transaction updated" : "Transaction created");
       onSaved(saved, isEdit);
       reset();
@@ -234,15 +223,11 @@ function TransactionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={handleClose}
-      />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
       <div className="relative z-10 w-full max-w-md rounded-2xl bg-card border
         border-border shadow-2xl p-6 space-y-5 animate-fade-in">
 
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-display font-bold text-foreground">
@@ -263,7 +248,6 @@ function TransactionModal({
           </button>
         </div>
 
-        {/* Type toggle */}
         <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-secondary">
           {(["income", "expense"] as RecordType[]).map((t) => (
             <button
@@ -281,48 +265,32 @@ function TransactionModal({
           ))}
         </div>
 
-        {/* Amount */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
-            Amount (USD)
-          </label>
+          <label className="text-xs font-medium text-muted-foreground">Amount (USD)</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2
-              text-muted-foreground text-sm">
-              $
-            </span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
             <input
               type="number"
               min="0"
               step="0.01"
               value={amount}
-              onChange={(e) => {
-                setAmount(e.target.value);
-                setErrors((p) => ({ ...p, amount: "" }));
-              }}
+              onChange={(e) => { setAmount(e.target.value); setErrors((p) => ({ ...p, amount: "" })); }}
               placeholder="0.00"
-              className={`w-full h-10 pl-7 pr-3 rounded-xl bg-secondary border
-                text-sm text-foreground outline-none focus:ring-2
-                focus:ring-primary/30 transition
+              className={`w-full h-10 pl-7 pr-3 rounded-xl bg-secondary border text-sm
+                text-foreground outline-none focus:ring-2 focus:ring-primary/30 transition
                 ${errors.amount ? "border-destructive" : "border-border"}`}
             />
           </div>
-          {errors.amount && (
-            <p className="text-xs text-destructive">{errors.amount}</p>
-          )}
+          {errors.amount && <p className="text-xs text-destructive">{errors.amount}</p>}
         </div>
 
-        {/* Category */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
-            Category
-          </label>
+          <label className="text-xs font-medium text-muted-foreground">Category</label>
           <select
             value={categoryId ?? ""}
             onChange={(e) => setCategoryId(Number(e.target.value))}
             className="w-full h-10 px-3 rounded-xl bg-secondary border border-border
-              text-sm text-foreground outline-none focus:ring-2
-              focus:ring-primary/30 transition"
+              text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/30 transition"
           >
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -330,32 +298,23 @@ function TransactionModal({
           </select>
         </div>
 
-        {/* Date */}
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-muted-foreground">Date</label>
           <input
             type="date"
             value={date}
             max={todayISO()}
-            onChange={(e) => {
-              setDate(e.target.value);
-              setErrors((p) => ({ ...p, date: "" }));
-            }}
-            className={`w-full h-10 px-3 rounded-xl bg-secondary border
-              text-sm text-foreground outline-none focus:ring-2
-              focus:ring-primary/30 transition
+            onChange={(e) => { setDate(e.target.value); setErrors((p) => ({ ...p, date: "" })); }}
+            className={`w-full h-10 px-3 rounded-xl bg-secondary border text-sm
+              text-foreground outline-none focus:ring-2 focus:ring-primary/30 transition
               ${errors.date ? "border-destructive" : "border-border"}`}
           />
-          {errors.date && (
-            <p className="text-xs text-destructive">{errors.date}</p>
-          )}
+          {errors.date && <p className="text-xs text-destructive">{errors.date}</p>}
         </div>
 
-        {/* Notes */}
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-muted-foreground">
-            Notes{" "}
-            <span className="text-muted-foreground/50">(optional)</span>
+            Notes <span className="text-muted-foreground/50">(optional)</span>
           </label>
           <textarea
             value={notes}
@@ -368,7 +327,6 @@ function TransactionModal({
           />
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3 pt-1">
           <button
             onClick={handleClose}
@@ -381,19 +339,10 @@ function TransactionModal({
             onClick={handleSubmit}
             disabled={loading}
             className={`flex-1 h-10 rounded-xl text-sm font-medium text-white
-              flex items-center justify-center gap-2
-              hover:opacity-90 transition disabled:opacity-60
-              ${isEdit
-                ? "bg-primary"
-                : type === "income"
-                  ? "bg-success"
-                  : "gradient-primary"}`}
+              flex items-center justify-center gap-2 hover:opacity-90 transition disabled:opacity-60
+              ${isEdit ? "bg-primary" : type === "income" ? "bg-success" : "gradient-primary"}`}
           >
-            {loading
-              ? <Loader2 size={14} className="animate-spin" />
-              : isEdit
-                ? <Pencil size={14} />
-                : <Plus size={14} />}
+            {loading ? <Loader2 size={14} className="animate-spin" /> : isEdit ? <Pencil size={14} /> : <Plus size={14} />}
             {isEdit ? "Save changes" : `Add ${type}`}
           </button>
         </div>
@@ -421,10 +370,7 @@ function ConfirmDeleteModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onCancel}
-      />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
       <div className="relative z-10 w-full max-w-sm rounded-2xl bg-card border
         border-border shadow-2xl p-6 space-y-4 animate-fade-in">
 
@@ -438,12 +384,8 @@ function ConfirmDeleteModal({
               Delete transaction
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
-              This{" "}
-              <span className="font-medium text-foreground">{record.type}</span>
-              {" "}of{" "}
-              <span className="font-medium text-foreground">
-                ${formatAmount(record.amount)}
-              </span>
+              This <span className="font-medium text-foreground">{record.type}</span> of{" "}
+              <span className="font-medium text-foreground">${formatAmount(record.amount)}</span>
               {" "}will be soft deleted. Admin can restore it later.
             </p>
           </div>
@@ -464,9 +406,7 @@ function ConfirmDeleteModal({
               text-destructive-foreground flex items-center justify-center gap-2
               hover:opacity-90 transition disabled:opacity-60"
           >
-            {loading
-              ? <Loader2 size={14} className="animate-spin" />
-              : <Trash2 size={14} />}
+            {loading ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
             Delete
           </button>
         </div>
@@ -480,18 +420,20 @@ function ConfirmDeleteModal({
 export default function TransactionsPage() {
   const { isAdmin } = useRole();
 
-  const [records,       setRecords]       = useState<FinancialRecord[]>([]);
-  const [count,         setCount]         = useState(0);
-  const [loading,       setLoading]       = useState(true);
-  const [showModal,     setShowModal]     = useState(false);
-  const [editRecord,    setEditRecord]    = useState<FinancialRecord | null>(null);
-  const [deleteTarget,  setDeleteTarget]  = useState<FinancialRecord | null>(null);
+  const [records,      setRecords]      = useState<FinancialRecord[]>([]);
+  const [count,        setCount]        = useState(0);
+  const [loading,      setLoading]      = useState(true);
+  const [showModal,    setShowModal]    = useState(false);
+  const [editRecord,   setEditRecord]   = useState<FinancialRecord | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<FinancialRecord | null>(null);
 
-  const [search, setSearch] = useState("");
-  const [type,   setType]   = useState("");
-  const [page,   setPage]   = useState(1);
+  const [search,   setSearch]   = useState("");
+  const [type,     setType]     = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo,   setDateTo]   = useState("");
+  const [page,     setPage]     = useState(1);
 
-  // ── Fetch ─────────────────────────────────────────────────────────────────
+  // ── Fetch ──────────────────────────────────────────────────────────────
 
   const fetchRecords = useCallback(async () => {
     setLoading(true);
@@ -501,8 +443,10 @@ export default function TransactionsPage() {
         page_size: String(PAGE_SIZE),
         ordering: "-date",
       };
-      if (type)   params.type   = type;
-      if (search) params.search = search;
+      if (type)     params.type      = type;
+      if (search)   params.search    = search;
+      if (dateFrom) params.date_from = dateFrom;
+      if (dateTo)   params.date_to   = dateTo;
 
       const data = await api.list(params);
 
@@ -518,25 +462,22 @@ export default function TransactionsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, type, search]);
+  }, [page, type, search, dateFrom, dateTo]);
 
   useEffect(() => {
     const t = setTimeout(fetchRecords, search ? 400 : 0);
     return () => clearTimeout(t);
   }, [fetchRecords, search]);
 
-  useEffect(() => { setPage(1); }, [type, search]);
+  // Reset to page 1 whenever any filter changes
+  useEffect(() => { setPage(1); }, [type, search, dateFrom, dateTo]);
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
+  // ── Handlers ────────────────────────────────────────────────────────────
 
   const handleSaved = (record: FinancialRecord, isEdit: boolean) => {
     if (isEdit) {
-      // Replace updated record in list
-      setRecords((prev) =>
-        prev.map((r) => r.id === record.id ? record : r)
-      );
+      setRecords((prev) => prev.map((r) => r.id === record.id ? record : r));
     } else {
-      // Prepend new record
       setRecords((prev) => [record, ...prev]);
       setCount((c) => c + 1);
     }
@@ -556,7 +497,7 @@ export default function TransactionsPage() {
 
   const totalPages = Math.ceil(count / PAGE_SIZE);
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────────────
 
   return (
     <>
@@ -565,9 +506,7 @@ export default function TransactionsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">
-              Transactions
-            </h1>
+            <h1 className="text-2xl font-display font-bold text-foreground">Transactions</h1>
             <p className="text-sm text-muted-foreground mt-1">
               {loading ? "Loading…" : `${count} record${count !== 1 ? "s" : ""}`}
             </p>
@@ -588,8 +527,7 @@ export default function TransactionsPage() {
               <button
                 onClick={openCreate}
                 className="inline-flex items-center gap-2 h-9 px-4 rounded-xl
-                  gradient-primary text-sm font-medium text-white
-                  hover:opacity-90 transition"
+                  gradient-primary text-sm font-medium text-white hover:opacity-90 transition"
               >
                 <Plus size={15} />
                 New transaction
@@ -600,9 +538,9 @@ export default function TransactionsPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
+          {/* Search */}
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2
-              h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search notes, category…"
@@ -612,6 +550,8 @@ export default function TransactionsPage() {
                 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
+
+          {/* Type */}
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <select
@@ -625,27 +565,62 @@ export default function TransactionsPage() {
               <option value="expense">Expense</option>
             </select>
           </div>
+
+          {/* Date From */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground whitespace-nowrap">From</span>
+            <input
+              type="date"
+              value={dateFrom}
+              max={dateTo || todayISO()}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="h-9 px-3 rounded-lg bg-card border border-border text-sm
+                outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          {/* Date To */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground whitespace-nowrap">To</span>
+            <input
+              type="date"
+              value={dateTo}
+              min={dateFrom}
+              max={todayISO()}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="h-9 px-3 rounded-lg bg-card border border-border text-sm
+                outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          {/* Clear dates */}
+          {(dateFrom || dateTo) && (
+            <button
+              onClick={() => { setDateFrom(""); setDateTo(""); }}
+              className="h-9 px-3 rounded-lg border border-border bg-secondary
+                text-sm text-muted-foreground hover:text-foreground
+                flex items-center gap-1.5 transition-colors"
+            >
+              <X size={13} /> Clear dates
+            </button>
+          )}
         </div>
 
         {/* Table */}
         <div className="rounded-2xl bg-card border border-border overflow-hidden">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-3
-              text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground">
               <Loader2 size={28} className="animate-spin" />
               <p className="text-sm">Fetching records…</p>
             </div>
           ) : records.length === 0 ? (
             <div className="px-6 py-16 text-center space-y-3">
-              <p className="text-muted-foreground text-sm">
-                No transactions found.
-              </p>
+              <p className="text-muted-foreground text-sm">No transactions found.</p>
               {isAdmin && (
                 <button
                   onClick={openCreate}
                   className="inline-flex items-center gap-2 h-9 px-4 rounded-xl
-                    gradient-primary text-sm font-medium text-white
-                    hover:opacity-90 transition"
+                    gradient-primary text-sm font-medium text-white hover:opacity-90 transition"
                 >
                   <Plus size={14} />
                   Add your first transaction
@@ -661,11 +636,9 @@ export default function TransactionsPage() {
                       ...(isAdmin ? ["Actions"] : [])].map((h) => (
                       <th
                         key={h}
-                        className={`text-xs font-medium text-muted-foreground
-                          uppercase tracking-wider px-6 py-3
-                          ${h === "Amount" || h === "Actions"
-                            ? "text-right"
-                            : "text-left"}`}
+                        className={`text-xs font-medium text-muted-foreground uppercase
+                          tracking-wider px-6 py-3
+                          ${h === "Amount" || h === "Actions" ? "text-right" : "text-left"}`}
                       >
                         {h}
                       </th>
@@ -680,28 +653,23 @@ export default function TransactionsPage() {
                         hover:bg-muted/30 transition-colors
                         ${i % 2 === 1 ? "bg-muted/10" : ""}`}
                     >
-                      {/* Notes */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className={`h-8 w-8 rounded-lg flex items-center
-                            justify-center text-xs font-bold shrink-0
+                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center
+                            text-xs font-bold shrink-0
                             ${tx.type === "income"
                               ? "bg-success/10 text-success"
                               : "bg-destructive/10 text-destructive"}`}>
                             {tx.type === "income" ? "+" : "−"}
                           </div>
-                          <span className="text-sm font-medium text-foreground
-                            truncate max-w-[180px]">
+                          <span className="text-sm font-medium text-foreground truncate max-w-[180px]">
                             {tx.notes || (
-                              <span className="text-muted-foreground italic">
-                                No notes
-                              </span>
+                              <span className="text-muted-foreground italic">No notes</span>
                             )}
                           </span>
                         </div>
                       </td>
 
-                      {/* Category */}
                       <td className="px-6 py-4">
                         <span className="text-xs px-2.5 py-1 rounded-full
                           bg-secondary text-secondary-foreground font-medium">
@@ -709,49 +677,34 @@ export default function TransactionsPage() {
                         </span>
                       </td>
 
-                      {/* Date */}
-                      <td className="px-6 py-4 text-sm text-muted-foreground
-                        whitespace-nowrap">
+                      <td className="px-6 py-4 text-sm text-muted-foreground whitespace-nowrap">
                         {formatDate(tx.date)}
                       </td>
 
-                      {/* Created by */}
-                      <td className="px-6 py-4 text-xs text-muted-foreground
-                        truncate max-w-[140px]">
+                      <td className="px-6 py-4 text-xs text-muted-foreground truncate max-w-[140px]">
                         {tx.created_by_email ?? "—"}
                       </td>
 
-                      {/* Amount */}
-                      <td className={`px-6 py-4 text-sm font-semibold text-right
-                        whitespace-nowrap
-                        ${tx.type === "income"
-                          ? "text-success"
-                          : "text-foreground"}`}>
-                        {tx.type === "income" ? "+" : "−"}
-                        ${formatAmount(tx.amount)}
+                      <td className={`px-6 py-4 text-sm font-semibold text-right whitespace-nowrap
+                        ${tx.type === "income" ? "text-success" : "text-foreground"}`}>
+                        {tx.type === "income" ? "+" : "−"}${formatAmount(tx.amount)}
                       </td>
 
-                      {/* Actions — admin only */}
                       {isAdmin && (
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-1">
-                            {/* Edit */}
                             <button
                               onClick={() => openEdit(tx)}
-                              className="p-1.5 rounded-lg hover:bg-primary/10
-                                transition-colors text-muted-foreground
-                                hover:text-primary"
+                              className="p-1.5 rounded-lg hover:bg-primary/10 transition-colors
+                                text-muted-foreground hover:text-primary"
                               aria-label="Edit record"
                             >
                               <Pencil className="h-3.5 w-3.5" />
                             </button>
-
-                            {/* Delete */}
                             <button
                               onClick={() => setDeleteTarget(tx)}
-                              className="p-1.5 rounded-lg hover:bg-destructive/10
-                                transition-colors text-muted-foreground
-                                hover:text-destructive"
+                              className="p-1.5 rounded-lg hover:bg-destructive/10 transition-colors
+                                text-muted-foreground hover:text-destructive"
                               aria-label="Delete record"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -771,16 +724,14 @@ export default function TransactionsPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Showing {(page - 1) * PAGE_SIZE + 1}–
-              {Math.min(page * PAGE_SIZE, count)} of {count}
+              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, count)} of {count}
             </p>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="h-8 w-8 rounded-lg flex items-center justify-center
-                  border border-border hover:bg-muted disabled:opacity-40
-                  transition-colors"
+                  border border-border hover:bg-muted disabled:opacity-40 transition-colors"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -788,8 +739,7 @@ export default function TransactionsPage() {
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`h-8 w-8 rounded-lg flex items-center justify-center
-                    text-sm transition-colors
+                  className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm transition-colors
                     ${page === i + 1
                       ? "gradient-primary text-white"
                       : "border border-border hover:bg-muted"}`}
@@ -801,8 +751,7 @@ export default function TransactionsPage() {
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
                 className="h-8 w-8 rounded-lg flex items-center justify-center
-                  border border-border hover:bg-muted disabled:opacity-40
-                  transition-colors"
+                  border border-border hover:bg-muted disabled:opacity-40 transition-colors"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
