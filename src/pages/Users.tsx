@@ -40,7 +40,7 @@ function authHeader(): Record<string, string> {
 }
 
 async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`/api/users${path}`, {
+  const res = await fetch(`https://zorvyn.duckdns.org${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
