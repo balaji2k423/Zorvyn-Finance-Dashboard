@@ -146,7 +146,6 @@ export function Navbar() {
 
             <div className="hidden sm:block text-left">
               <p className="text-sm font-medium text-foreground leading-tight">
-                {user?.name || "Guest"}
               </p>
               <p className="text-xs text-muted-foreground capitalize">
                 {user?.role || "User"}
