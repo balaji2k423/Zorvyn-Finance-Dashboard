@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'zorvyn.duckdns.org',
+  baseURL: 'https://zorvyn.duckdns.org',
   headers: {
     'Content-Type': 'application/json',
   },
