@@ -23,7 +23,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 // Base axios instance
 const api = axios.create({
-  baseURL: "https://zorvyn.duckdns.org",
+  baseURL: "https://zorvyn.duckdns.org/api",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -44,7 +44,7 @@ api.interceptors.response.use(
       try {
         const refresh = localStorage.getItem("refresh_token");
         const res = await axios.post(
-          "http://127.0.0.1:8000/api/auth/token/refresh/",
+          "https://zorvyn.duckdns.org/api/auth/token/refresh/",
           { refresh }
         );
         localStorage.setItem("access_token", res.data.access);

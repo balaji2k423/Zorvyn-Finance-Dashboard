@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://zorvyn.duckdns.org',
-  headers: {
+  baseURL: 'https://zorvyn.duckdns.org/api',
+   headers: {
     'Content-Type': 'application/json',
   },
 })
@@ -28,7 +28,7 @@ api.interceptors.response.use(
       try {
         const refresh = localStorage.getItem('refresh_token')
         const response = await axios.post(
-          'http://127.0.0.1:8000/api/auth/token/refresh/',
+          'https://zorvyn.duckdns.org/api/auth/token/refresh/',
           { refresh }
         )
 
