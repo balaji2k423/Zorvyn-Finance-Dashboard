@@ -20,6 +20,7 @@ python manage.py runserver
 ```
 
 ## API Docs
+visit https://zorvyn.duckdns.org/api/docs/
 Visit http://127.0.0.1:8000/api/docs/
 
 ## Roles
