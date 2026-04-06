@@ -23,7 +23,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 // Base axios instance
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: "https://zorvyn.duckdns.org",
   headers: { "Content-Type": "application/json" },
 });
 
